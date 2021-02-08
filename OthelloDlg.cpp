@@ -438,7 +438,7 @@ void COthelloDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	{
 		for (int j = 0; j < SIZE; j++)
 		{
-			if (CanItPlaceChessPieces(i, j, !NowColor))
+			if ((GetChessBoardColor(i, j) == -1) && (CanItPlaceChessPieces(i, j, !NowColor)))
 			{
 				NowColor = (!NowColor);
 				b = true;
@@ -475,6 +475,7 @@ void COthelloDlg::OnLButtonUp(UINT nFlags, CPoint point)
 			MessageBoxW(L"黑棋胜利！", L"双人黑白棋", MB_OK | MB_ICONINFORMATION);
 		else
 			MessageBoxW(L"平局！", L"双人黑白棋", MB_OK | MB_ICONINFORMATION);
+		EndGame();
 	}
 	//以上为判断胜负
 }
