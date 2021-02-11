@@ -83,6 +83,7 @@ void COthelloDlg::EndGame()
 	//index = -1;
 	GetDlgItem(IDC_START)->SetWindowTextW(L"开始游戏");
 	GetDlgItem(IDC_ENDGAME)->EnableWindow(FALSE);
+	GetDlgItem(IDC_CHESSCOUNT)->SetWindowTextW(L"双人五子棋");
 	//GetDlgItem(IDC_REPENTANCE)->EnableWindow(FALSE);
 	//GetDlgItem(IDC_SAVE)->EnableWindow(FALSE);
 }
@@ -188,6 +189,8 @@ CPoint COthelloDlg::GetNextSameColorChessPos(int nx, int ny, int direction, int 
 			if (GetChessBoardColor(x, y) == color)
 				return CPoint(x, y);
 		}
+	default:
+		return CPoint(SIZE, SIZE);
 	}
 }
 
@@ -368,6 +371,7 @@ void COthelloDlg::OnBnClickedStart()
 	SetChessBoardColor(SIZE / 2, SIZE / 2, 1);
 	SetChessBoardColor(SIZE / 2, SIZE / 2 - 1, 0);
 	SetChessBoardColor(SIZE / 2 - 1, SIZE / 2, 0);
+	GetDlgItem(IDC_CHESSCOUNT)->SetWindowTextW(L"黑棋:2个\t白棋:2个");
 	//黑白棋初始有四个棋子
 }
 
@@ -433,7 +437,7 @@ void COthelloDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		}
 		
 	}
-	bool b = false;
+	bool b1 = false, b2 = false;
 	for (int i = 0; i < SIZE; i++)
 	{
 		for (int j = 0; j < SIZE; j++)
@@ -441,12 +445,28 @@ void COthelloDlg::OnLButtonUp(UINT nFlags, CPoint point)
 			if ((GetChessBoardColor(i, j) == -1) && (CanItPlaceChessPieces(i, j, !NowColor)))
 			{
 				NowColor = (!NowColor);
-				b = true;
+				b1 = true;
 				break;
 			}
 		}
-		if (b)
+		if (b1)
 			break;
+	}
+	if (!b1)
+	{
+		for (int i = 0; i < SIZE; i++)
+		{
+			for (int j = 0; j < SIZE; j++)
+			{
+				if ((GetChessBoardColor(i, j) == -1) && (CanItPlaceChessPieces(i, j, NowColor)))
+				{
+					b2 = true;
+					break;
+				}
+			}
+			if (b2)
+				break;
+		}
 	}
 	//黑白棋不一定是轮流下，如果一方无棋可下则另一方一直下，直到那一方可以下
 	index++;
@@ -456,25 +476,33 @@ void COthelloDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	//如果可以悔棋，取消禁用“悔棋”按钮，否则禁用“悔棋”按钮
 	SendMessage(WM_SETCURSOR);
 	//以上为放置棋子
-	if (index == (SIZE * SIZE-4))
+	int white = 0, black = 0;
+	for (int i = 0; i < SIZE; i++)
 	{
-		int w = 0, b = 0;
-		for (int i = 0; i < SIZE; i++)
+		for (int j = 0; j < SIZE; j++)
 		{
-			for (int j = 0; j < SIZE; j++)
-			{
-				if (GetChessBoardColor(i, j) == 0)
-					w++;
-				else
-					b++;
-			}
+			int color = GetChessBoardColor(i, j);
+			if (color == 0)
+				white++;
+			else if (color == 1)
+				black++;
 		}
-		if (w > b)
-			MessageBoxW(L"白棋胜利！", L"双人黑白棋", MB_OK | MB_ICONINFORMATION);
-		else if (b > w)
-			MessageBoxW(L"黑棋胜利！", L"双人黑白棋", MB_OK | MB_ICONINFORMATION);
+	}
+	CString str;
+	str.Format(L"黑棋:%d个\t白棋:%d个", black, white); 
+	CRect rcStatic;
+	GetDlgItem(IDC_CHESSCOUNT)->GetWindowRect(&rcStatic);
+	ScreenToClient(&rcStatic);
+	InvalidateRect(&rcStatic);
+	GetDlgItem(IDC_CHESSCOUNT)->SetWindowTextW(str);
+	if ((!b1)&&(!b2))//双方都无棋可下
+	{
+		if (white > black)
+			MessageBoxW(L"白棋胜利！\n"+str, L"双人黑白棋", MB_OK | MB_ICONINFORMATION);
+		else if (black > white)
+			MessageBoxW(L"黑棋胜利！\n"+str, L"双人黑白棋", MB_OK | MB_ICONINFORMATION);
 		else
-			MessageBoxW(L"平局！", L"双人黑白棋", MB_OK | MB_ICONINFORMATION);
+			MessageBoxW(L"平局！\n"+str, L"双人黑白棋", MB_OK | MB_ICONINFORMATION);
 		EndGame();
 	}
 	//以上为判断胜负
