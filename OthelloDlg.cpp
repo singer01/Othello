@@ -83,7 +83,7 @@ void COthelloDlg::EndGame()
 	//index = -1;
 	GetDlgItem(IDC_START)->SetWindowTextW(L"开始游戏");
 	GetDlgItem(IDC_ENDGAME)->EnableWindow(FALSE);
-	GetDlgItem(IDC_CHESSCOUNT)->SetWindowTextW(L"双人五子棋");
+	GetDlgItem(IDC_CHESSCOUNT)->SetWindowTextW(L"双人黑白棋");
 	//GetDlgItem(IDC_REPENTANCE)->EnableWindow(FALSE);
 	//GetDlgItem(IDC_SAVE)->EnableWindow(FALSE);
 }
@@ -328,14 +328,14 @@ HCURSOR COthelloDlg::OnQueryDragIcon()
 
 void COthelloDlg::OnBnClickedQuit()
 {
-	if (!IsPlaying || MessageBoxW(L"正在游戏中，确定要退出吗？", L"双人五子棋", MB_YESNO | MB_ICONQUESTION) == IDYES)
+	if (!IsPlaying || MessageBoxW(L"正在游戏中，确定要退出吗？", L"双人黑白棋", MB_YESNO | MB_ICONQUESTION) == IDYES)
 		EndDialog(0);
 }
 
 
 void COthelloDlg::OnClose()
 {
-	if (!IsPlaying || MessageBoxW(L"正在游戏中，确定要退出吗？", L"双人五子棋", MB_YESNO | MB_ICONQUESTION) == IDYES)
+	if (!IsPlaying || MessageBoxW(L"正在游戏中，确定要退出吗？", L"双人黑白棋", MB_YESNO | MB_ICONQUESTION) == IDYES)
 		CDialogEx::OnClose();
 }
 
@@ -357,7 +357,7 @@ BOOL COthelloDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 
 void COthelloDlg::OnBnClickedStart()
 {
-	if (IsPlaying && MessageBoxW(L"确定要重玩吗？", L"双人五子棋", MB_YESNO | MB_ICONQUESTION) == IDNO)
+	if (IsPlaying && MessageBoxW(L"确定要重玩吗？", L"双人黑白棋", MB_YESNO | MB_ICONQUESTION) == IDNO)
 		return;
 	GetDlgItem(IDC_START)->SetWindowTextW(L"重玩");
 	IsPlaying = true;
@@ -378,7 +378,7 @@ void COthelloDlg::OnBnClickedStart()
 
 void COthelloDlg::OnBnClickedEndgame()
 {
-	if (MessageBoxW(L"确定要结束本局吗？", L"双人五子棋", MB_YESNO | MB_ICONQUESTION) == IDYES)
+	if (MessageBoxW(L"确定要结束本局吗？", L"双人黑白棋", MB_YESNO | MB_ICONQUESTION) == IDYES)
 		EndGame();
 }
 
